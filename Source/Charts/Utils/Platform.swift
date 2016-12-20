@@ -11,6 +11,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
 	public typealias NSUIEvent = UIEvent
 	public typealias NSUITouch = UITouch
 	public typealias NSUIImage = UIImage
+    public typealias NSUIEdgeInsets = UIEdgeInsets
 	public typealias NSUIScrollView = UIScrollView
 	public typealias NSUIGestureRecognizer = UIGestureRecognizer
 	public typealias NSUIGestureRecognizerState = UIGestureRecognizerState
@@ -220,6 +221,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
 	public typealias NSUIEvent = NSEvent
 	public typealias NSUITouch = NSTouch
 	public typealias NSUIImage = NSImage
+    public typealias NSUIEdgeInsets = EdgeInsets
 	public typealias NSUIScrollView = NSScrollView
 	public typealias NSUIGestureRecognizer = NSGestureRecognizer
 	public typealias NSUIGestureRecognizerState = NSGestureRecognizerState
@@ -489,6 +491,14 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             return self.cgImage(forProposedRect: nil, context: nil, hints: nil)
 		}
 	}
+
+    extension EdgeInsets
+    {
+        static var zero: EdgeInsets
+        {
+            return EdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+    }
 
 	extension NSTouch
     {
