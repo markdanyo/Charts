@@ -405,8 +405,8 @@ open class XAxisRenderer: AxisRendererBase
             else { return }
         
         context.beginPath()
-        context.move(to: CGPoint(x: position.x, y: viewPortHandler.contentTop))
-        context.addLine(to: CGPoint(x: position.x, y: viewPortHandler.contentBottom))
+        context.move(to: CGPoint(x: position.x, y: viewPortHandler.contentTop + limitLine.lineInsets.top))
+        context.addLine(to: CGPoint(x: position.x, y: viewPortHandler.contentBottom - limitLine.lineInsets.bottom))
         
         context.setStrokeColor(limitLine.lineColor.cgColor)
         context.setLineWidth(limitLine.lineWidth)
