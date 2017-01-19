@@ -36,7 +36,13 @@ open class ViewPortHandler: NSObject
     
     /// maximum scale value on the x-axis
     fileprivate var _maxScaleX = CGFloat.greatestFiniteMagnitude
-    
+
+    /// minimum x value that we can scroll to
+    fileprivate var _minScrollableXPercent = CGFloat(0.0)
+
+    /// maximum x value that we can scroll to
+    fileprivate var _maxScrollableXPercent = CGFloat(1.0)
+
     /// contains the current scale factor of the x-axis
     fileprivate var _scaleX = CGFloat(1.0)
     
@@ -325,9 +331,11 @@ open class ViewPortHandler: NSObject
             width = content!.width
             height = content!.height
         }
-        
-        let maxTransX = -width * (_scaleX - 1.0)
-        _transX = min(max(matrix.tx, maxTransX - _transOffsetX), _transOffsetX)
+
+        let minTransX = -width * _minScrollableXPercent * _scaleX
+        let maxTransX = -width * (_maxScrollableXPercent * _scaleX - 1.0)
+
+        _transX = min(max(matrix.tx, maxTransX - _transOffsetX), minTransX + _transOffsetX)
         
         let maxTransY = height * (_scaleY - 1.0)
         _transY = max(min(matrix.ty, maxTransY + _transOffsetY), -_transOffsetY)
@@ -367,7 +375,17 @@ open class ViewPortHandler: NSObject
         
         limitTransAndScale(matrix: &_touchMatrix, content: _contentRect)
     }
-    
+
+    open func setMinimumScrollableXPercent(_ percent: CGFloat) {
+        _minScrollableXPercent = percent
+        limitTransAndScale(matrix: &_touchMatrix, content: _contentRect)
+    }
+
+    open func setMaximumScrollableXPercent(_ percent: CGFloat) {
+        _maxScrollableXPercent = percent
+        limitTransAndScale(matrix: &_touchMatrix, content: _contentRect)
+    }
+
     /// Sets the minimum and maximum scale factors for the x-axis
     open func setMinMaxScaleX(minScaleX: CGFloat, maxScaleX: CGFloat)
     {

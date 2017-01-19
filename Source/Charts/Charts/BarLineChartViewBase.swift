@@ -1174,6 +1174,16 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         _viewPortHandler.setMaximumScaleX(CGFloat(xScale))
     }
 
+    open func setMinimumScrollableX(_ minScrollX: Double) {
+        let percent = (minScrollX - _xAxis.axisMinimum) / (_xAxis.axisMaximum - _xAxis.axisMinimum)
+        _viewPortHandler.setMinimumScrollableXPercent(CGFloat(percent))
+    }
+
+    open func setMaximumScrollableX(_ maxScrollX: Double) {
+        let percent = (maxScrollX - _xAxis.axisMinimum) / (_xAxis.axisMaximum - _xAxis.axisMinimum)
+        _viewPortHandler.setMaximumScrollableXPercent(CGFloat(percent))
+    }
+
     /// Limits the maximum and minimum value count that can be visible by pinching and zooming.
     ///
     /// e.g. minRange=10, maxRange=100 no less than 10 values and no more that 100 values can be viewed
