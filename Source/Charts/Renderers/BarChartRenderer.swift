@@ -93,10 +93,10 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             guard let e = dataSet.entryForIndex(i) as? BarChartDataEntry else { continue }
             
             let vals = e.yValues
-            
+
             x = e.x
-            y = e.y
-            
+            y = e.y >= 0 ? max(e.y, dataSet.barMinimumHeight) : min(e.y, -dataSet.barMinimumHeight)
+
             if !containsStacks || vals == nil
             {
                 let left = CGFloat(x - barWidthHalf)

@@ -151,6 +151,8 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
     open var barRoundingCorners: UIRectCorner = .allCorners
     #endif
 
+    open var barMinimumHeight: Double = 0.0
+
     /// the alpha value (transparency) that is used for drawing the highlight indicator bar. min = 0.0 (fully transparent), max = 1.0 (fully opaque)
     open var highlightAlpha = CGFloat(120.0 / 255.0)
     

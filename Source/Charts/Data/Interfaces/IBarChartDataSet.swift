@@ -39,6 +39,8 @@ public protocol IBarChartDataSet: IBarLineScatterCandleBubbleChartDataSet
     var barRoundingCorners: UIRectCorner { get set }
     #endif
 
+    var barMinimumHeight: Double { get set }
+
     /// the alpha value (transparency) that is used for drawing the highlight indicator bar. min = 0.0 (fully transparent), max = 1.0 (fully opaque)
     var highlightAlpha: CGFloat { get set }
     
