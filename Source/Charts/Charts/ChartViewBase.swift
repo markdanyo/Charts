@@ -18,6 +18,19 @@ import CoreGraphics
 #endif
 
 @objc
+public class ChartMarkerData: NSObject {
+    public let pos: CGPoint
+    public let entry: ChartDataEntry
+    public let highlight: Highlight
+
+    init(pos: CGPoint, entry: ChartDataEntry, highlight: Highlight) {
+        self.pos = pos
+        self.entry = entry
+        self.highlight = highlight
+    }
+}
+
+@objc
 public protocol ChartViewDelegate
 {
     /// Called when a value has been selected inside the chart.
@@ -33,6 +46,9 @@ public protocol ChartViewDelegate
     
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc optional func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat)
+
+    // Called before drawing chart markers so that the delegate may alter the draw order.
+    @objc optional func sortedMarkerData(from markerData: [ChartMarkerData]) -> [ChartMarkerData]
 }
 
 open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
@@ -601,20 +617,19 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
             , isDrawMarkersEnabled &&
                 valuesToHighlight()
             else { return }
-        
-        for i in 0 ..< _indicesToHighlight.count
-        {
+
+        let markerDataToDraw: [ChartMarkerData] = (0 ..< _indicesToHighlight.count).flatMap { i in
             let highlight = _indicesToHighlight[i]
             
             guard let
                 set = data?.getDataSetByIndex(highlight.dataSetIndex),
                 let e = _data?.entryForHighlight(highlight)
-                else { continue }
+                else { return nil }
             
             let entryIndex = set.entryIndex(entry: e)
             if entryIndex > Int(Double(set.entryCount) * _animator.phaseX)
             {
-                continue
+                return nil
             }
 
             let pos = getMarkerPosition(highlight: highlight)
@@ -622,14 +637,21 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
             // check bounds
             if !_viewPortHandler.isInBounds(x: pos.x, y: pos.y)
             {
-                continue
+                return nil
             }
 
+            return ChartMarkerData(pos: pos, entry: e, highlight: highlight)
+        }
+
+        // TODO: Sort the marker data
+        let sortedData = delegate?.sortedMarkerData?(from: markerDataToDraw) ?? markerDataToDraw
+
+        for markerData in sortedData {
             // callbacks to update the content
-            marker.refreshContent(entry: e, highlight: highlight)
+            marker.refreshContent(entry: markerData.entry, highlight: markerData.highlight)
             
             // draw the marker
-            marker.draw(context: context, point: pos)
+            marker.draw(context: context, point: markerData.pos)
         }
     }
     
