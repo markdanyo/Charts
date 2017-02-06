@@ -1390,7 +1390,8 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         yValue: Double,
         axis: YAxis.AxisDependency,
         duration: TimeInterval,
-        easing: ChartEasingFunctionBlock?)
+        easing: ChartEasingFunctionBlock?,
+        completion: (() -> Void)? = nil)
     {
         let bounds = valueForTouchPoint(
             point: CGPoint(x: viewPortHandler.contentLeft, y: viewPortHandler.contentTop),
@@ -1408,7 +1409,8 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
             xOrigin: bounds.x,
             yOrigin: bounds.y,
             duration: duration,
-            easing: easing)
+            easing: easing,
+            completion: completion)
         
         addViewportJob(job)
     }

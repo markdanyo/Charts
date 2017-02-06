@@ -18,7 +18,9 @@ import CoreGraphics
 
 open class AnimatedMoveViewJob: AnimatedViewPortJob
 {
-    public override init(
+    private let completion: (() -> Void)?
+
+    public init(
         viewPortHandler: ViewPortHandler,
         xValue: Double,
         yValue: Double,
@@ -27,8 +29,11 @@ open class AnimatedMoveViewJob: AnimatedViewPortJob
         xOrigin: CGFloat,
         yOrigin: CGFloat,
         duration: TimeInterval,
-        easing: ChartEasingFunctionBlock?)
+        easing: ChartEasingFunctionBlock?,
+        completion: (() -> Void)? = nil)
     {
+        self.completion = completion
+
         super.init(viewPortHandler: viewPortHandler,
             xValue: xValue,
             yValue: yValue,
@@ -55,5 +60,9 @@ open class AnimatedMoveViewJob: AnimatedViewPortJob
         
         transformer.pointValueToPixel(&pt)
         viewPortHandler.centerViewPort(pt: pt, chart: view)
+    }
+
+    internal override func animationEnd() {
+        completion?()
     }
 }
